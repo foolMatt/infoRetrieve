@@ -1,1 +1,28 @@
-print("testpush")
+from github import Github
+import base64
+
+# 1. Authenticate using a Personal Access Token (Replace with your token)
+ACCESS_TOKEN = "##"
+g = Github(ACCESS_TOKEN)
+
+# 2. Specify the repository (username/repository_name)
+repo_name = "foolMatt/infoRetrieve"
+repo = g.get_repo(repo_name)
+
+# 3. File details
+file_path = "D:/Jupyter/Documents/testpush.py"  # Path to your local file
+github_path = "foolMatt/infoRetrieve/testpush"  # Path where it will be stored in the repo
+
+# 4. Read the file content and encode it
+with open(file_path, "r", encoding="utf-8") as file:
+    content = file.read()
+
+# 5. Check if the file exists in the repo
+try:
+    file_content = repo.get_contents(github_path)
+    sha = file_content.sha  # Get SHA of existing file (needed for updates)
+    repo.update_file(github_path, "Updated script.py", content, sha)
+    print(f"Updated {github_path} successfully.")
+except:
+    repo.create_file(github_path, "Added script.py", content)
+    print(f"Created {github_path} successfully.")
